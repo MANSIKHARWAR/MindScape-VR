@@ -1,11 +1,12 @@
  # MindScape-VR
 
 
-🧩 Problem Statement
+🧩 Problem Statement :
+
 Millions of people silently battle fear, anxiety, and self-doubt. Access to personalized therapy is often limited — due to high costs, stigma, or lack of availability.
 Meanwhile, most traditional apps are impersonal, lack real emotional intelligence, and miss the power of immersive engagement.
 
-💡 Solution Overview
+💡 Solution Overview :
 We believe healing starts with understanding — not just words, but feelings.
 
 This project is a heartfelt step toward reimagining therapy. It’s not just an app; it’s an emotional companion — one that listens to your tone, reads your expressions, and gently guides you through your fears, doubts, and dreams.
