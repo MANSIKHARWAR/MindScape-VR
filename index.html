@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindScape VR — AI Emotional Therapy</title>
+  <meta name="description" content="AI-powered emotional therapy companion — fear genome mapping, immersive breathwork, historical roleplay, and real-time mood analysis." />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Google Fonts (Cinzel + Lato) loaded in CSS via @import -->
+</head>
+
+<body>
+
+<!-- ============================================================
+     BACKGROUND LAYERS
+     • #scene-bg  → full-screen radial gradient (changes with mood)
+     • #particles → floating emoji particles
+     ============================================================ -->
+<div id="scene-bg"></div>
+<div id="particles"></div>
+
+<!-- ============================================================
+     PATTERN ALERT  (bottom-right toast, appears when avoidance
+                     phrases are detected in the chat)
+     ============================================================ -->
+<div id="pattern-alert">
+  <strong>🔮 Pattern Detected</strong>
+  <p>Avoidance language found. Let's gently explore this together — you're not stuck.</p>
+</div>
+
+<!-- ============================================================
+     NAVIGATION BAR
+     ============================================================ -->
+<nav id="nav">
+  <div class="logo">🧠 Mind<span>Scape</span> VR</div>
+
+  <!-- Page links — data-page tells JS which page to activate -->
+  <div class="nav-links">
+    <button class="nav-btn active" data-page="home">Home</button>
+    <button class="nav-btn"        data-page="therapy">Therapy</button>
+    <button class="nav-btn"        data-page="genome">Fear Map</button>
+    <button class="nav-btn"        data-page="roleplay">Roleplay</button>
+    <button class="nav-btn"        data-page="breathwork">Breathwork</button>
+    <button class="nav-btn"        data-page="insights">Insights</button>
+  </div>
+
+  <!-- Live scene badge (updates when mood changes) -->
+  <div class="mood-badge" id="mood-badge">● Scene: Cosmic Void 🌌</div>
+</nav>
+
+<!-- ============================================================
+     APP WRAPPER  (all pages live here, only one .active at once)
+     ============================================================ -->
+<div id="app">
+
+  <!-- ==========================================================
+       PAGE: HOME
+       What it does: Hero introduction + feature overview cards
+       ========================================================== -->
+  <div class="page active" id="home">
+
+    <!-- ---- HERO ---- -->
+    <div class="hero">
+      <p class="hero-eyebrow">Emotional Intelligence · AI Therapy · Immersive Healing</p>
+      <h1 class="hero-title">Heal Through<br>Understanding</h1>
+      <p class="hero-sub">
+        An AI emotional companion that listens to your tone, reads your patterns,
+        and guides you through fear, doubt, and growth — one session at a time.
+        No expensive headsets. No judgment.
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="hero-cta">
+        <button class="btn-primary" id="cta-therapy">Begin Your Journey →</button>
+        <button class="btn-secondary" id="cta-genome">View Fear Map</button>
+      </div>
+
+      <!-- Rotating affirmation quote -->
+      <div class="affirmation-box" id="affirmation-text">"Loading…"</div>
+    </div>
+
+    <!-- ---- HOW IT WORKS (Feature Cards) ---- -->
+    <div class="section features-section">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-sub">Six interconnected systems working in harmony to understand and heal you.</p>
+
+      <!--
+        Each card explains ONE feature so users immediately understand the app.
+        Icons + titles are designed to be obvious at a glance.
+      -->
+      <div class="grid-3">
+
+        <div class="card">
+          <div class="card-icon">🧬</div>
+          <div class="card-title">Fear Genome Mapping</div>
+          <div class="card-desc">
+            Your unique fear clusters are visualised as an interactive node map.
+            After every therapy session, intensity levels automatically decrease.
+            Click any node to start a targeted session.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🎭</div>
+          <div class="card-title">Historical Roleplay</div>
+          <div class="card-desc">
+            Embody Lincoln, Curie, Mandela, or Tesla. The AI coaches you through
+            their mindset so you can adopt their courage, clarity, or focus as your own.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🌊</div>
+          <div class="card-title">Emotion-Responsive Scenes</div>
+          <div class="card-desc">
+            The background, particles, and atmosphere shift in real-time based on
+            what you write — from a calm ocean sanctuary to a sharp mountain sky.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🎙️</div>
+          <div class="card-title">Voice Emotion Analysis</div>
+          <div class="card-desc">
+            Speak instead of type — your voice is transcribed and the mood of your
+            words shapes the next AI response and the visual environment around you.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🔮</div>
+          <div class="card-title">Pattern Intelligence</div>
+          <div class="card-desc">
+            The system recognises avoidance language and anxiety spirals in real-time,
+            gently alerting you before the pattern repeats — so you can break the loop.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📖</div>
+          <div class="card-title">Insights Dashboard</div>
+          <div class="card-desc">
+            Track your Calm, Energy, and Clarity scores over time.
+            Earn achievement badges, review your session log, and see your
+            emotional growth at a glance.
+          </div>
+        </div>
+
+      </div><!-- /grid-3 -->
+    </div><!-- /section -->
+  </div><!-- /home -->
+
+
+  <!-- ==========================================================
+       PAGE: THERAPY
+       What it does: Real-time AI chat therapy.
+         • Choose mood manually or let the AI detect it from text.
+         • Voice input via Web Speech API.
+         • Background scene changes automatically.
+       ========================================================== -->
+  <div class="page" id="therapy">
+    <div class="section section-sm">
+      <h2 class="section-title">Therapy Session</h2>
+      <p class="section-sub">
+        Your AI companion is listening with full emotional intelligence.
+        Type or speak — the scene adapts to how you feel.
+      </p>
+
+      <!--
+        MOOD SELECTOR
+        Clicking a mood chip manually sets the background scene.
+        The AI also auto-detects mood from your words.
+      -->
+      <p class="text-sm text-muted" style="margin-bottom:.6rem">
+        Set your current mood (or just start typing — it detects automatically):
+      </p>
+      <div class="mood-bar">
+        <button class="mood-chip active" data-mood="neutral">🌌 Neutral</button>
+        <button class="mood-chip"        data-mood="calm">🌊 Calm</button>
+        <button class="mood-chip"        data-mood="anxious">🏔️ Anxious</button>
+        <button class="mood-chip"        data-mood="confident">🌅 Confident</button>
+        <button class="mood-chip"        data-mood="sad">🌿 Sad</button>
+      </div>
+
+      <!-- CHAT CARD -->
+      <div class="chat-wrapper">
+
+        <!-- header shows current scene & mood -->
+        <div class="chat-header">
+          <span id="therapy-header">🌌 Cosmic Void · Mood: <strong>neutral</strong></span>
+          <span id="therapy-exchange-count" class="text-muted">New session</span>
+        </div>
+
+        <!-- MESSAGE AREA
+             Empty state shows quick-start chips.
+             Messages appear as bubbles (user = right, AI = left). -->
+        <div class="chat-messages" id="therapy-messages">
+          <!-- rendered by JS -->
+        </div>
+
+        <!-- INPUT ROW -->
+        <div class="chat-input-row">
+          <!-- 🎙️ Voice button — click to start/stop recording -->
+          <button class="voice-btn" id="therapy-voice" title="Click to speak">🎙️</button>
+          <input
+            type="text"
+            class="chat-input"
+            id="therapy-input"
+            placeholder="Share what's on your mind…"
+          />
+          <button class="send-btn" id="therapy-send">Send</button>
+        </div>
+
+      </div><!-- /chat-wrapper -->
+    </div>
+  </div><!-- /therapy -->
+
+
+  <!-- ==========================================================
+       PAGE: GENOME (Fear Map)
+       What it does:
+         • Canvas-drawn node graph of 8 fear clusters.
+         • Each node size = intensity level.
+         • Clicking a node jumps to therapy with that fear as topic.
+         • Intensity bars below the canvas show numeric values.
+         • Intensities decrease slightly each time you do therapy.
+       ========================================================== -->
+  <div class="page" id="genome">
+    <div class="section">
+      <h2 class="section-title">Fear Genome Map</h2>
+      <p class="section-sub">
+        Your unique fear patterns — visualised, tracked, and diminishing with each session.
+        <strong>Click any node</strong> to begin a targeted therapy session.
+      </p>
+
+      <!-- Canvas wrapper — canvas is inserted by JS -->
+      <div id="fear-canvas-wrap">
+        <!-- canvas injected here -->
+        <div class="canvas-hint">Click a node to begin therapy →</div>
+      </div>
+
+      <!-- Fear intensity progress bars -->
+      <h3 style="font-family:'Cinzel',serif;font-size:1rem;margin-bottom:1rem;margin-top:2rem;">
+        Fear Intensity Tracker
+      </h3>
+      <div id="fear-bars">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </div><!-- /genome -->
+
+
+  <!-- ==========================================================
+       PAGE: ROLEPLAY
+       What it does:
+         • Choose a historical figure (Lincoln, Curie, Mandela, Tesla).
+         • AI adopts their personality as your guide.
+         • Separate chat context from therapy chat.
+         • Back button returns to scenario selection.
+       ========================================================== -->
+  <div class="page" id="roleplay">
+    <div class="section">
+      <h2 class="section-title">Historical Roleplay</h2>
+      <p class="section-sub">
+        Step into the mindset of history's most resilient figures.
+        Let their story become your strength.
+      </p>
+
+      <!-- Active scenario header (hidden until a scenario is selected) -->
+      <div id="roleplay-active-header" style="display:none;margin-bottom:1.5rem;">
+        <div>
+          <h3 id="roleplay-header-icon" style="font-size:1.05rem;"></h3>
+          <p id="roleplay-header-sub"  class="text-muted text-sm"></p>
+        </div>
+        <div id="back-btn-wrap" style="display:none;">
+          <button class="btn-secondary" id="back-to-scenarios">← Back to Scenarios</button>
+        </div>
+      </div>
+
+      <!-- SCENARIO SELECTION GRID (shown by default) -->
+      <div class="scenario-grid" id="scenario-grid">
+        <!-- Cards injected by JS from ROLEPLAY_SCENARIOS -->
+      </div>
+
+      <!-- ROLEPLAY CHAT (hidden until scenario selected) -->
+      <div id="roleplay-chat-section" style="display:none;max-width:680px;">
+        <div class="chat-wrapper">
+          <div class="chat-header">
+            <span>Roleplay Session Active</span>
+          </div>
+          <div class="chat-messages" id="roleplay-messages">
+            <!-- rendered by JS -->
+          </div>
+          <div class="chat-input-row">
+            <button class="voice-btn" id="roleplay-voice" title="Speak">🎙️</button>
+            <input
+              type="text"
+              class="chat-input"
+              id="roleplay-input"
+              placeholder="What are you feeling in this moment…"
+            />
+            <button class="send-btn" id="roleplay-send">Send</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /roleplay -->
+
+
+  <!-- ==========================================================
+       PAGE: BREATHWORK
+       What it does:
+         • Box breathing exercise: 4s inhale → 4s hold → 4s exhale × 5 cycles.
+         • Animated ring grows/shrinks to guide you visually.
+         • Three technique cards for variety.
+         • AI breathwork coach: ask for a custom session.
+       ========================================================== -->
+  <div class="page" id="breathwork">
+    <div class="section section-sm">
+      <h2 class="section-title">Breathwork Sessions</h2>
+      <p class="section-sub">
+        Regulated breathing is one of the fastest ways to calm your nervous system.
+        Start the box breathing exercise or ask the AI coach below.
+      </p>
+
+      <!-- ANIMATED BREATH RING -->
+      <div class="breath-center">
+
+        <!--
+          The ring's CSS class changes during each phase:
+            .inhale  → scale(1.3)  — big
+            .hold    → scale(1.13) — held
+            .exhale  → scale(.87)  — small
+            .done    → scale(1)    — complete
+        -->
+        <div class="breath-ring idle" id="breath-ring">
+          <div class="phase">Ready</div>
+          <div class="count">Press Start</div>
+        </div>
+
+        <button class="btn-primary" id="start-breath">▶ Start Box Breathing (5 cycles)</button>
+
+        <!-- Three technique shortcut cards -->
+        <div class="technique-cards">
+          <div class="technique-card" data-technique="Box Breathing (4-4-4-4)">
+            <div class="t-emoji">📦</div>
+            <div class="t-name">Box Breathing</div>
+            <div class="t-desc">4-4-4-4 · Best for anxiety</div>
+          </div>
+          <div class="technique-card" data-technique="4-7-8 Method">
+            <div class="t-emoji">🌙</div>
+            <div class="t-name">4-7-8 Method</div>
+            <div class="t-desc">Inhale 4 · Hold 7 · Exhale 8</div>
+          </div>
+          <div class="technique-card" data-technique="Coherent Breathing">
+            <div class="t-emoji">💙</div>
+            <div class="t-name">Coherent Breath</div>
+            <div class="t-desc">5 seconds in · 5 out</div>
+          </div>
+        </div>
+
+      </div><!-- /breath-center -->
+
+      <!-- AI BREATHWORK COACH -->
+      <div class="card mt-3">
+        <div class="card-title">🤖 AI Breathwork Coach</div>
+        <div class="card-desc" style="margin-bottom:1rem;">
+          Ask for a guided session, a custom pattern, or help managing acute anxiety.
+        </div>
+        <div class="chat-input-row" style="padding:0;gap:.5rem;background:none;border:none;">
+          <input
+            type="text"
+            class="chat-input"
+            id="breathwork-input"
+            placeholder="e.g. Guide me through a 4-7-8 session…"
+          />
+          <button class="send-btn" id="breathwork-send">Ask</button>
+        </div>
+        <!-- AI reply renders here -->
+        <p id="breathwork-reply" style="margin-top:1rem;color:var(--text-2);font-size:.875rem;line-height:1.65;min-height:2rem;"></p>
+      </div>
+
+    </div>
+  </div><!-- /breathwork -->
+
+
+  <!-- ==========================================================
+       PAGE: INSIGHTS
+       What it does:
+         • Live stat cards: Calm %, Energy %, Clarity %, total exchanges.
+         • Animated progress bars that fill as you use the app.
+         • Achievement badges that unlock on milestones.
+         • Scrollable session log (last 8 entries).
+       ========================================================== -->
+  <div class="page" id="insights">
+    <div class="section">
+      <h2 class="section-title">Session Insights</h2>
+      <p class="section-sub">
+        Your emotional intelligence dashboard — patterns, progress, and personal milestones.
+        Scores update automatically after every AI conversation.
+      </p>
+
+      <!-- STAT CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-emoji">🌊</div>
+          <div class="stat-num" id="stat-calm" style="color:var(--teal)">0%</div>
+          <div class="stat-label">Calm Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-emoji">⚡</div>
+          <div class="stat-num" id="stat-energy" style="color:var(--amber)">0%</div>
+          <div class="stat-label">Energy Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-emoji">🔮</div>
+          <div class="stat-num" id="stat-clarity" style="color:var(--accent-glow)">0%</div>
+          <div class="stat-label">Clarity Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-emoji">💬</div>
+          <div class="stat-num" id="stat-sessions" style="color:var(--green)">0</div>
+          <div class="stat-label">AI Exchanges</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS BARS -->
+      <div class="card progress-section">
+        <div class="card-title" style="margin-bottom:1.25rem;">Emotional Progress</div>
+
+        <div class="progress-label">
+          <span>Calm</span>
+          <span id="prog-calm-pct" class="text-muted">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="prog-calm" style="width:0%;background:var(--teal)"></div>
+        </div>
+
+        <div class="progress-label">
+          <span>Energy</span>
+          <span id="prog-energy-pct" class="text-muted">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="prog-energy" style="width:0%;background:var(--amber)"></div>
+        </div>
+
+        <div class="progress-label">
+          <span>Clarity</span>
+          <span id="prog-clarity-pct" class="text-muted">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="prog-clarity" style="width:0%;background:var(--accent-glow)"></div>
+        </div>
+
+      </div><!-- /card -->
+
+      <!-- ACHIEVEMENTS -->
+      <div class="card mt-2" style="background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.2);">
+        <div class="card-title">🎖️ Achievements</div>
+        <div class="card-desc" style="margin-bottom:1rem;">
+          Badges unlock as you use different features of MindScape VR.
+        </div>
+        <div class="badges-row">
+          <div class="badge-pill" id="badge-first">🌱 First Step</div>
+          <div class="badge-pill" id="badge-heart">💬 Open Heart</div>
+          <div class="badge-pill" id="badge-ocean">🌊 Ocean Mind</div>
+          <div class="badge-pill" id="badge-power">⚡ Inner Power</div>
+          <div class="badge-pill" id="badge-clarity">🔮 Clarity Seeker</div>
+          <div class="badge-pill" id="badge-roleplay">🎭 Time Traveler</div>
+        </div>
+      </div>
+
+      <!-- SESSION LOG -->
+      <div class="card mt-2">
+        <div class="card-title" style="margin-bottom:.75rem;">Session Log</div>
+        <div class="session-log" id="session-log">
+          <div class="no-sessions">Start a therapy session to see your log here.</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /insights -->
+
+</div><!-- /app -->
+
+<!-- ============================================================
+     SCRIPTS
+     app.js handles: navigation, API calls, mood engine,
+     breathwork timer, fear canvas, insights refresh.
+     ============================================================ -->
+<script src="app.js"></script>
+
+</body>
+</html>
