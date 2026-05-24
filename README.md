@@ -34,8 +34,6 @@ No expensive headsets. No judgment. Just you, your emotions, and a smart, evolvi
 ---
 
 ## 🛠️ Tech Stack
-
-**Frontend**: HTML,CSS 
-**Backend**: Javascript
+HTML,CSS,JS
 ---
 
