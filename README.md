@@ -46,9 +46,3 @@ No expensive headsets. No judgment. Just you, your emotions, and a smart, evolvi
 
 ---
 
-
-
-# Backend setup (Python Flask or Node.js)
-cd backend
-pip install -r requirements.txt  # or npm install for Node
-python app.py  # or node index.js
