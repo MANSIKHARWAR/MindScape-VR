@@ -46,16 +46,7 @@ No expensive headsets. No judgment. Just you, your emotions, and a smart, evolvi
 
 ---
 
-## 🔧 How to Run / Installation
 
-```bash
-# Clone the repo
-git clone https://github.com/your-username/ai-emotion-therapy
-
-# Navigate to frontend
-cd frontend
-npm install
-npm start
 
 # Backend setup (Python Flask or Node.js)
 cd backend
