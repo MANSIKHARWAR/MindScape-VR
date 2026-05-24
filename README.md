@@ -35,14 +35,7 @@ No expensive headsets. No judgment. Just you, your emotions, and a smart, evolvi
 
 ## 🛠️ Tech Stack
 
-**Frontend**: React.js, TailwindCSS  
-**Backend**: Node.js / Flask (API endpoints)  
-**AI/ML**: TensorFlow, Hugging Face Transformers, OpenCV  
-**Graphics**: Three.js, Unity WebGL (experimental scene support)  
-**Emotion Detection**: DeepFace / FER models, voice tone analysis  
-**Cloud**: Firebase, Google Cloud Storage  
-**Data Viz**: D3.js / Chart.js  
-**Optional**: Ethereum-based badge system for donations or rewards
-
+**Frontend**: HTML,CSS 
+**Backend**: Javascript
 ---
 
